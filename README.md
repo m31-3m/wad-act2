@@ -1,58 +1,115 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Pharmacy Management System - Eloquent Relationships Assignment
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This Laravel project demonstrates the implementation of the three primary Eloquent relationships: **One-to-One**, **One-to-Many**, and **Many-to-Many**. 
 
-## About Laravel
+## 1. Entity Relationship Diagram (ERD)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Below is the database schema designed in Draw.io, illustrating how the entities are connected.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+![Database Schema](./ERD.png)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 2. Relationships Implemented
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### **One-to-One (1:1)**
+* **Entities:** `Pharmacist` <-> `Licence`
+* **Logic:** Each pharmacist is assigned exactly one professional license.
+* **Location:** * Model: `app/Models/Pharmacist.php` (`licence()` method)
+    * Migration: `database/migrations/2026_03_30_162927_create_licences_table.php` (contains `pharmacist_id`)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### **One-to-Many (1:N)**
+* **Entities:** `Category` <-> `Medicine`
+* **Logic:** A medical category (e.g., Antibiotics) can contain multiple different medicines.
+* **Location:** * Model: `app/Models/Category.php` (`medicines()` method)
+    * Migration: `database/migrations/2026_03_30_162942_create_medicines_table.php` (contains `category_id`)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### **Many-to-Many (N:M)**
+* **Entities:** `Medicine` <-> `Prescription`
+* **Logic:** A single prescription can include multiple medicines, and a specific medicine can be featured in many different prescriptions.
+* **Location:** * Models: `app/Models/Medicine.php` and `app/Models/Prescription.php` (`belongsToMany`)
+    * Pivot Table: `database/migrations/2026_03_30_162956_create_medicine_prescription_table.php`
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 3. Project Structure Checklist
 
-```bash
-composer require laravel/boost --dev
+* **Migrations:** Found in `database/migrations/`. All foreign keys use `constrained()` and `onDelete('cascade')` for data integrity.
+* **Models:** Found in `app/Models/`. All relationship methods are defined using Eloquent's native methods.
+* **Naming Conventions:** Tables follow plural naming (e.g., `medicines`), while Models follow singular naming (e.g., `Medicine`).
 
-php artisan boost:install
+---
+
+## 4. How to Run (For Testing)
+
+
+#### 🚀 1. Clone the Repository
+
+``` bash
+git clone https://github.com/m31-3m/wad-act2.git
+cd wad-act2
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+#### 📥 2. Install Dependencies
 
-## Contributing
+Make sure you have Composer installed, then run:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+``` bash
+composer install
+```
 
-## Code of Conduct
+#### ⚙️ 3. Environment Setup
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Copy the example environment file:
 
-## Security Vulnerabilities
+``` bash
+cp .env.example .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Generate the application key:
 
-## License
+``` bash
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### 🗄️ 4. Database Configuration (SQLite)
+
+Create the SQLite database file:
+
+``` bash
+touch database/database.sqlite
+```
+
+Then open the `.env` file and update the following:
+
+``` env
+DB_CONNECTION=sqlite
+DB_DATABASE=database/database.sqlite
+```
+
+> No need to create a database in MySQL or MariaDB.
+
+#### 🧱 5. Run Migrations
+
+Run the database migrations:
+
+``` bash
+php artisan migrate
+```
+
+#### ▶️ 6. Start the Development Server
+
+Start the Laravel server:
+
+``` bash
+php artisan serve
+```
+
+------------------------------------------------------------------------
+
+#### ✅ You're Ready!
+
+Your application should now be running locally. Open your browser and
+visit:
+
+http://127.0.0.1:8000

@@ -42,7 +42,6 @@ Below is the database schema designed in Draw.io, illustrating how the entities 
 
 ## 4. How to Run (For Testing)
 
-
 #### 🚀 1. Clone the Repository
 
 ``` bash
@@ -72,44 +71,27 @@ Generate the application key:
 php artisan key:generate
 ```
 
-#### 🗄️ 4. Database Configuration (SQLite)
+#### 🗄️ 4. Run Migrations
 
-Create the SQLite database file:
-
-``` bash
-touch database/database.sqlite
-```
-
-Then open the `.env` file and update the following:
-
-``` env
-DB_CONNECTION=sqlite
-DB_DATABASE=database/database.sqlite
-```
-
-> No need to create a database in MySQL or MariaDB.
-
-#### 🧱 5. Run Migrations
-
-Run the database migrations:
+This project uses **SQLite**. Run the migration to generate the tables and foreign keys:
 
 ``` bash
 php artisan migrate
 ```
 
-#### ▶️ 6. Start the Development Server
+> **Note:** Type `yes` if prompted to create the `database.sqlite` file.
 
-Start the Laravel server:
+
+#### 🧱 5. Verification (Optional)
+
+To see the relationships in action, you can use Laravel Tinker:
 
 ``` bash
-php artisan serve
+php artisan tinker
 ```
 
-------------------------------------------------------------------------
+Example:
 
-#### ✅ You're Ready!
-
-Your application should now be running locally. Open your browser and
-visit:
-
-http://127.0.0.1:8000
+``` php
+App\\Models\\Pharmacist::all();
+```

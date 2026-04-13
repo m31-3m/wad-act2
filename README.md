@@ -1,97 +1,78 @@
-# Pharmacy Management System - Eloquent Relationships Assignment
+# Pharmacy Management System (Middleware & CRUD Integration)
 
-This Laravel project demonstrates the implementation of the three primary Eloquent relationships: **One-to-One**, **One-to-Many**, and **Many-to-Many**. 
+## 📌 Project Overview
+This project is an evolution of the **Eloquent Relationships** assignment. It has been transformed into a functional Laravel application featuring a complete UI, CRUD operations, and Role-Based Access Control (RBAC) using Middleware.
 
-## 1. Entity Relationship Diagram (ERD)
-
-Below is the database schema designed in Draw.io, illustrating how the entities are connected.
-
-![Database Schema](./ERD.png)
-
----
-
-## 2. Relationships Implemented
-
-### **One-to-One (1:1)**
-* **Entities:** `Pharmacist` <-> `Licence`
-* **Logic:** Each pharmacist is assigned exactly one professional license.
-* **Location:** * Model: `app/Models/Pharmacist.php` (`licence()` method)
-    * Migration: `database/migrations/2026_03_30_162927_create_licences_table.php` (contains `pharmacist_id`)
-
-### **One-to-Many (1:N)**
-* **Entities:** `Category` <-> `Medicine`
-* **Logic:** A medical category (e.g., Antibiotics) can contain multiple different medicines.
-* **Location:** * Model: `app/Models/Category.php` (`medicines()` method)
-    * Migration: `database/migrations/2026_03_30_162942_create_medicines_table.php` (contains `category_id`)
-
-### **Many-to-Many (N:M)**
-* **Entities:** `Medicine` <-> `Prescription`
-* **Logic:** A single prescription can include multiple medicines, and a specific medicine can be featured in many different prescriptions.
-* **Location:** * Models: `app/Models/Medicine.php` and `app/Models/Prescription.php` (`belongsToMany`)
-    * Pivot Table: `database/migrations/2026_03_30_162956_create_medicine_prescription_table.php`
+**Activity Mapping:**
+- **Customers:** Managed via the `Customer` model.
+- **Products:** Represented by the `Medicine` model.
+- **Orders:** Represented by the `Prescription` model (linked via Many-to-Many with Medicines).
 
 ---
 
-## 3. Project Structure Checklist
+## 🛠️ Technical Tasks Accomplished
 
-* **Migrations:** Found in `database/migrations/`. All foreign keys use `constrained()` and `onDelete('cascade')` for data integrity.
-* **Models:** Found in `app/Models/`. All relationship methods are defined using Eloquent's native methods.
-* **Naming Conventions:** Tables follow plural naming (e.g., `medicines`), while Models follow singular naming (e.g., `Medicine`).
+### 1. Build CRUD + UI
+- **Full CRUD:** Implemented for Customers, Medicines (Products), and Prescriptions (Orders).
+- **Eloquent Relationships:** 
+    - `Customer` hasMany `Prescription` (1:N)
+    - `Medicine` belongsTo `Category` (1:N)
+    - `Prescription` belongsToMany `Medicine` (N:M) via pivot table.
+- **Eager Loading:** Implemented in `PrescriptionController` using `::with(['customer', 'medicines'])` to optimize database queries and prevent N+1 issues.
+
+### 2. Access Rules (Middleware)
+- **Authentication:** All entities are protected by the `auth` middleware.
+- **Admin Access:** A custom `AdminMiddleware` was created to restrict User Management and sensitive actions.
+- **Role System:** 
+    - `admin`: Can create, edit, delete all records and manage user roles.
+    - `pharmacist`: Can view records but cannot modify inventory or access admin panels.
+
+### 3. UI Behavior
+- **Dynamic Buttons:** Edit and Delete buttons are conditionally rendered using `@if(auth()->user()->role === 'admin')`.
+- **Navigation:** The "Manage Users" link is only visible to Admin users.
+- **Protected Actions:** Restricted actions on the Prescription page show a "Read Only" status for non-admins.
 
 ---
 
-## 4. How to Run (For Testing)
+## 📊 Database Schema (ERD)
+![ERD Diagram](./ERD.png)
 
-#### 🚀 1. Clone the Repository
+---
 
-``` bash
-git clone https://github.com/m31-3m/wad-act2.git
-cd wad-act2
-```
+## 🚀 How to Run
 
-#### 📥 2. Install Dependencies
-
-Make sure you have Composer installed, then run:
-
-``` bash
+### Step 1: Install Dependencies
+```bash
 composer install
 ```
 
-#### ⚙️ 3. Environment Setup
-
-Copy the example environment file:
-
-``` bash
+### Step 2: Environment Setup
+```bash
 cp .env.example .env
-```
-
-Generate the application key:
-
-``` bash
 php artisan key:generate
 ```
 
-#### 🗄️ 4. Run Migrations
-
-This project uses **SQLite**. Run the migration to generate the tables and foreign keys:
-
-``` bash
+### Step 3: Database Migration (SQLite)
+This project uses SQLite for portability.
+```bash
 php artisan migrate
 ```
+(Type yes if asked to create the database.sqlite file)
 
-> **Note:** Type `yes` if prompted to create the `database.sqlite` file.
-
-
-#### 🧱 5. Verification (Optional)
-
-To see the relationships in action, you can use Laravel Tinker:
-
-``` bash
-php artisan tinker
+### Step 4: Start the Server
+```bash
+php artisan serve
 ```
 
-Example:
+---
 
-``` php
-App\\Models\\Pharmacist::all();
-```
+## 🔐 Test Credentials
+
+| Role       | Email          | Password     |
+|------------|----------------|--------------|
+| Admin      | admin@test.com | password123  |
+| Pharmacist | Register via UI| your_password|
+
+
+#### Submitted by: Mel G. Magdaraog
+#### Submitted to: Mr. Jehu Casimiro

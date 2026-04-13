@@ -9,14 +9,14 @@ class Prescription extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['patient_name'];
+    // Update this line to include customer_id:
+    protected $fillable = ['patient_name', 'customer_id'];
 
-    /**
-     * Many-to-Many Relationship
-     * A prescription can contain many medicines.
-     */
-    public function medicines()
-    {
+    public function customer() {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function medicines() {
         return $this->belongsToMany(Medicine::class);
     }
 }
